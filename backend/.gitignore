@@ -1,0 +1,9 @@
+*.pyc
+.vscode/
+venv/
+__pycache__
+.DS_Store/
+migrations/
+.mypy_cache
+api.log
+.env
