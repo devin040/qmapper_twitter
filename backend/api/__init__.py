@@ -20,6 +20,10 @@ def create_app():
     env = os.environ.get("FLASK_ENV", "dev")
     app.config.from_object(config[env])  # config dict is from api/config.py
 
+    # initialize Neo4j 
+    from api.models.base import db
+    db.init_app(app, config[env].DATABASE_URI, config[env].DATABASE_USER, config[env].DATABASE_PASS)
+
     # import and register blueprints
     from api.views import main
     app.register_blueprint(main.main)
