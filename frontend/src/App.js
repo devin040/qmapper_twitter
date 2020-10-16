@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Container, 
   Row, 
@@ -9,11 +9,21 @@ import {
   DropdownMenu, 
   DropdownItem 
 } from 'reactstrap';
+
+import apiWrapper from './api'
 import './style/App.css';
 import viz from './randomviz.png' 
 
 function App() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      let testResult = await apiWrapper.testMethod();
+      console.log(testResult.data); 
+    }
+    fetchData();
+  })
 
   const toggle = () => setDropdownOpen(prevState => !prevState);
 
