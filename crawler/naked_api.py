@@ -14,8 +14,8 @@ headers = {'Authorization': "Bearer " + BEARER_TOKEN}
 
 endpoint = 'https://api.twitter.com/2/tweets/search/recent'
 
-params = {'query': '#QANON',
-          'max_results': '10',
+params = {'query': ' #DarkToLight OR #TheGreatAwakening OR #QAnon OR #Q OR #WWG1WGA OR #WWG1WGAWORLDWIDE',
+          'max_results': '100',
           'expansions': 'author_id,referenced_tweets.id,in_reply_to_user_id,geo.place_id',
           'place.fields': 'contained_within,country,full_name,geo,id,name,place_type',
           'tweet.fields': 'source,author_id,created_at,entities,in_reply_to_user_id,public_metrics,referenced_tweets,lang,geo,context_annotations',
@@ -26,7 +26,6 @@ res = requests.get(endpoint, params=params, headers=headers)
 
 print(res.json())
 response = res.json()
-print("hi")
 
 
 class App:
@@ -118,7 +117,8 @@ class App:
     @staticmethod
     def _create_and_return_tweet(tx, tweet):
         id = tweet['id']
-        created_at = tweet['created_at']
+        created_at_unix = utilities.convertTimeString(tweet['created_at'])
+        created_at_str = tweet['created_at']
         text = tweet['text']
         lang = tweet['lang']
         author_id = tweet['author_id']
@@ -129,14 +129,14 @@ class App:
 
         query = ("MERGE (a1:Person:Author {id: $author_id}) "
                  "MERGE (t1:Tweet {id: $id}) "
-                 "ON CREATE SET t1.created_at = $created_at, t1.text=$text, t1.lang=$lang, "
+                 "ON CREATE SET t1.created_at_unix = $created_at_unix, t1.created_at_str=$cas, t1.text=$text, t1.lang=$lang, "
                  "                              t1.retweet_count=$retweet_count, t1.reply_count=$reply_count, "
                  "                               t1.like_count=$like_count, t1.quote_count=$quote_count "
                  "ON MATCH SET t1.retweet_count=$retweet_count, t1.reply_count=$reply_count, "
                  "             t1.like_count=$like_count, t1.quote_count=$quote_count "
                  "MERGE (a1)-[:Tweets]->(t1) "   
                  "RETURN a1, t1")
-        result = tx.run(query, id=id, created_at=created_at, lang=lang, text=text, author_id=author_id,
+        result = tx.run(query, id=id, created_at_unix=created_at_unix, lang=lang, text=text, author_id=author_id, cas=created_at_str,
                         retweet_count=retweet_count, reply_count=reply_count, like_count=like_count, quote_count=quote_count)
         try:
             return [{"a1": record["a1"]["id"], "t1": record["t1"]["id"]}
@@ -185,8 +185,8 @@ class App:
 
     @staticmethod
     def _create_and_connect_tweet_context_annotation(tx, tweet_id, annotationObject):
-        domain=annotationObject['domain']
-        entity=annotationObject['entity']
+        domain = annotationObject['domain']
+        entity = annotationObject['entity']
         query = f"MERGE (e1:Entity:{domain['name'].replace(' ', '_')} {{id:$e_id}}) "
         query += "ON CREATE SET e1.data=$e_name "
         query += "MERGE (d1:Domain {id:$d_id}) ON CREATE SET d1.name=$d_name, d1.description=$d_descr "
@@ -216,7 +216,8 @@ class App:
         # The Reference Card is also a good resource for keywords,
         # see https://neo4j.com/docs/cypher-refcard/current/
         id = twitter_user['id']
-        created_account = twitter_user['created_at']
+        created_account_unix = utilities.convertTimeString(twitter_user['created_at'])
+        created_account_str = twitter_user['created_at']
         verified = str(twitter_user['verified'])
         username = twitter_user['username']
         follower_count = twitter_user['public_metrics']['followers_count']
@@ -227,15 +228,15 @@ class App:
 
         query = (
             "MERGE (p1:Person:Author { id: $id }) "
-            "ON CREATE SET p1.name=$name, p1.created_account=$created_account, p1.verified=$verified,"
+            "ON CREATE SET p1.name=$name, p1.created_account_unix=$created_account_unix, p1.verified=$verified,"
             "                             p1.username=$username, p1.follower_count=$follower_count, "
             "                             p1.following_count=$following_count, p1.tweet_count=$tweet_count,"
-            "                               p1.description=$description "
+            "                               p1.description=$description, p1.created_account_str=$created_account_str "
             "RETURN p1"
         )
-        result = tx.run(query, name=name, id=id, created_account=created_account, verified=verified, username=username,
+        result = tx.run(query, name=name, id=id, created_account_unix=created_account_unix, verified=verified, username=username,
                         follower_count=follower_count, following_count=following_count, tweet_count=tweet_count,
-                        description=description)
+                        description=description, created_account_str=created_account_str)
         try:
             return [{"user": record['p1']['username']}
                     for record in result]
@@ -397,7 +398,7 @@ class App:
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
     scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
-    host_name = "13.59.234.229"
+    host_name = "3.137.215.26"
     # neo4jqmap
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(scheme=scheme, host_name=host_name, port=port)
