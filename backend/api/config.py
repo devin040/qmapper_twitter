@@ -14,7 +14,7 @@ class Config:
 
     # CHANGE SECRET_KEY!! Use sha256 to generate one and set this as an environment variable
     SECRET_KEY = "testkey"
-    DATABASE_URI = os.environ.get("DATABASE_URL")
+    DATABASE_URI = os.environ.get("NEO_URI")
     DATABASE_USER = os.environ.get("NEO_USER")
     DATABASE_PASS = os.environ.get("NEO_PASSWORD")
 

@@ -1,6 +1,16 @@
 # QAnon Backend
 
 ## Usage
+Before running the server, create a `.env` file in the `backend` directory with the following keys defined:
+```
+NEO_USER=
+NEO_PASS=
+NEO_URI=
+```
+
+With the corresponding values to connect to your database.
+
+
 Install the python dependencies and run the server. You first need to be within the `backend` directory before running these commands:
 ```
 $ pip3 install -r requirements.txt
