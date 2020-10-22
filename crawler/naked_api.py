@@ -10,22 +10,22 @@ import utilities
 from twitter_config import BEARER_TOKEN
 
 
-headers = {'Authorization': "Bearer " + BEARER_TOKEN}
+def make_request():
+    headers = {'Authorization': "Bearer " + BEARER_TOKEN}
 
-endpoint = 'https://api.twitter.com/2/tweets/search/recent'
+    endpoint = 'https://api.twitter.com/2/tweets/search/recent'
 
-params = {'query': ' #DarkToLight OR #TheGreatAwakening OR #QAnon OR #Q OR #WWG1WGA OR #WWG1WGAWORLDWIDE',
-          'max_results': '100',
-          'expansions': 'author_id,referenced_tweets.id,in_reply_to_user_id,geo.place_id',
-          'place.fields': 'contained_within,country,full_name,geo,id,name,place_type',
-          'tweet.fields': 'source,author_id,created_at,entities,in_reply_to_user_id,public_metrics,referenced_tweets,lang,geo,context_annotations',
-          'user.fields': 'created_at,description,entities,public_metrics,username,verified,location',
-          }
+    params = {'query': ' #DarkToLight OR #TheGreatAwakening OR #QAnon OR #Q OR #WWG1WGA OR #WWG1WGAWORLDWIDE',
+              'max_results': '100',
+              'expansions': 'author_id,referenced_tweets.id,in_reply_to_user_id,geo.place_id',
+              'place.fields': 'contained_within,country,full_name,geo,id,name,place_type',
+              'tweet.fields': 'source,author_id,created_at,entities,in_reply_to_user_id,public_metrics,referenced_tweets,lang,geo,context_annotations',
+              'user.fields': 'created_at,description,entities,public_metrics,username,verified,location',
+              }
 
-res = requests.get(endpoint, params=params, headers=headers)
-
-print(res.json())
-response = res.json()
+    res = requests.get(endpoint, params=params, headers=headers)
+    res = res.json()
+    return res
 
 
 class App:
@@ -92,19 +92,23 @@ class App:
             if 'hashtags' in tweet['entities']:
                 for item in tweet['entities']['hashtags']:
                     with self.driver.session() as session:
-                        session.write_transaction(self._create_tweet_entity_and_connect, item['tag'], tweet['id'], 'HASHTAGS')
+                        session.write_transaction(self._create_tweet_entity_and_connect, item['tag'], tweet['id'],
+                                                  'HASHTAGS')
             if 'mentions' in tweet['entities']:
                 for item in tweet['entities']['mentions']:
                     with self.driver.session() as session:
-                        session.write_transaction(self._create_tweet_entity_and_connect, item['username'], tweet['id'], "MENTIONS")
+                        session.write_transaction(self._create_tweet_entity_and_connect, item['username'], tweet['id'],
+                                                  "MENTIONS")
             if 'urls' in tweet['entities']:
                 for item in tweet['entities']['urls']:
                     with self.driver.session() as session:
-                        session.write_transaction(self._create_tweet_entity_and_connect, get_base_domain(item['expanded_url']), tweet['id'], "LINKS")
+                        session.write_transaction(self._create_tweet_entity_and_connect,
+                                                  get_base_domain(item['expanded_url']), tweet['id'], "LINKS")
             if 'annotations' in tweet['entities']:
                 for item in tweet['entities']['annotations']:
                     with self.driver.session() as session:
-                        session.write_transaction(self._create_tweet_entity_and_connect, item['normalized_text'], tweet['id'], 'ANNOTATES', annotate_type=item['type'])
+                        session.write_transaction(self._create_tweet_entity_and_connect, item['normalized_text'],
+                                                  tweet['id'], 'ANNOTATES', annotate_type=item['type'])
 
         if 'context_annotations' in tweet:
             for ca in tweet['context_annotations']:
@@ -132,12 +136,14 @@ class App:
                  "ON CREATE SET t1.created_at_unix = $created_at_unix, t1.created_at_str=$cas, t1.text=$text, t1.lang=$lang, "
                  "                              t1.retweet_count=$retweet_count, t1.reply_count=$reply_count, "
                  "                               t1.like_count=$like_count, t1.quote_count=$quote_count "
-                 "ON MATCH SET t1.retweet_count=$retweet_count, t1.reply_count=$reply_count, "
+                 "ON MATCH SET t1.retweet_count=$retweet_count, t1.reply_count=$reply_count, t1.text=$text, "
                  "             t1.like_count=$like_count, t1.quote_count=$quote_count "
-                 "MERGE (a1)-[:Tweets]->(t1) "   
+                 "MERGE (a1)-[:Tweets]->(t1) "
                  "RETURN a1, t1")
-        result = tx.run(query, id=id, created_at_unix=created_at_unix, lang=lang, text=text, author_id=author_id, cas=created_at_str,
-                        retweet_count=retweet_count, reply_count=reply_count, like_count=like_count, quote_count=quote_count)
+        result = tx.run(query, id=id, created_at_unix=created_at_unix, lang=lang, text=text, author_id=author_id,
+                        cas=created_at_str,
+                        retweet_count=retweet_count, reply_count=reply_count, like_count=like_count,
+                        quote_count=quote_count)
         try:
             return [{"a1": record["a1"]["id"], "t1": record["t1"]["id"]}
                     for record in result]
@@ -204,9 +210,6 @@ class App:
             logging.error("{query} raised an error: \n {exception}".format(
                 query=query, exception=exception))
 
-
-
-
     @staticmethod
     def _create_and_return_user(tx, twitter_user):
 
@@ -232,9 +235,14 @@ class App:
             "                             p1.username=$username, p1.follower_count=$follower_count, "
             "                             p1.following_count=$following_count, p1.tweet_count=$tweet_count,"
             "                               p1.description=$description, p1.created_account_str=$created_account_str "
+            "ON MATCH SET p1.name=$name, p1.created_account_unix=$created_account_unix, p1.verified=$verified,"
+            "                             p1.username=$username, p1.follower_count=$follower_count, "
+            "                             p1.following_count=$following_count, p1.tweet_count=$tweet_count,"
+            "                               p1.description=$description, p1.created_account_str=$created_account_str "
             "RETURN p1"
         )
-        result = tx.run(query, name=name, id=id, created_account_unix=created_account_unix, verified=verified, username=username,
+        result = tx.run(query, name=name, id=id, created_account_unix=created_account_unix, verified=verified,
+                        username=username,
                         follower_count=follower_count, following_count=following_count, tweet_count=tweet_count,
                         description=description, created_account_str=created_account_str)
         try:
@@ -360,12 +368,14 @@ class App:
             if 'hashtags' in twitter_user['entities']['description']:
                 for tag in twitter_user['entities']['description']['hashtags']:
                     with self.driver.session() as session:
-                        result = session.write_transaction(self._create_and_return_descr_hashtag, tag['tag'], twitter_user['id'])
+                        result = session.write_transaction(self._create_and_return_descr_hashtag, tag['tag'],
+                                                           twitter_user['id'])
                         print(result)
             if 'mentions' in twitter_user['entities']['description']:
                 for mention in twitter_user['entities']['description']['mentions']:
                     with self.driver.session() as session:
-                        result = session.write_transaction(self._create_and_return_descr_mention, mention['username'], twitter_user['id'])
+                        result = session.write_transaction(self._create_and_return_descr_mention, mention['username'],
+                                                           twitter_user['id'])
                         print(result)
         if 'entities' in twitter_user and 'url' in twitter_user['entities']:
             for url in twitter_user['entities']['url']['urls']:
@@ -375,7 +385,8 @@ class App:
                     print(result)
         if 'location' in twitter_user:
             with self.driver.session() as session:
-                result = session.write_transaction(self._create_and_return_descr_location, twitter_user['location'], twitter_user['id'])
+                result = session.write_transaction(self._create_and_return_descr_location, twitter_user['location'],
+                                                   twitter_user['id'])
                 print(result)
 
     def find_person(self, person_name):
@@ -394,17 +405,40 @@ class App:
         result = tx.run(query, person_name=person_name)
         return [record["name"] for record in result]
 
+    def get_empty_users(self):
+        with self.driver.session() as session:
+            result = session.read_transaction(self._get_empty_users)
+            return result
+
+    @staticmethod
+    def _get_empty_users(tx):
+        query = "Match (p:Author) where p.username is null RETURN p.id as id LIMIT 100"
+        result = tx.run(query)
+        return [record["id"] for record in result]
+
+    def get_empty_tweets(self):
+        with self.driver.session() as session:
+            result = session.read_transaction(self._get_empty_tweets)
+            print(result)
+            return result
+
+    @staticmethod
+    def _get_empty_tweets(tx):
+        query = "Match (t:Tweet) where t.text is null RETURN t.id as id LIMIT 100"
+        result = tx.run(query)
+        return [record["id"] for record in result]
 
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
     scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
-    host_name = "3.137.215.26"
+    host_name = "52.165.132.195"
     # neo4jqmap
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(scheme=scheme, host_name=host_name, port=port)
     user = "neo4j"
     password = "neo4jqmap"
     app = App(url, user, password)
+    response = make_request()
     for user in response['includes']['users']:
         app.create_user(user)
         app.create_descr_entities(user)
