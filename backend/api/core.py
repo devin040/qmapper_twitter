@@ -27,6 +27,17 @@ def create_response(
     return jsonify(response)
 
 
+def serialize_list(items: List) -> List:
+    """Serializes a list of objects, exposing their attributes.
+    
+    :param items - List of Objects that inherit from Mixin
+    :returns List of dictionaries
+    """
+    if not items or items is None:
+        return []
+    return [dict(x) for x in items]
+
+
 # More info at http://flask.pocoo.org/docs/1.0/patterns/apierrors/
 def all_exception_handler(error: Exception) -> Tuple[Response, int]:
     """Catches and handles all exceptions, add more specific error Handlers.
