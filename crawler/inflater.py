@@ -55,11 +55,19 @@ def get_empty_tweets_from_db_and_request(app):
 
 
 def tweet_process(app, response):
-    for user_obj in response['includes']['users']:
-        app.create_user(user_obj)
-        app.create_descr_entities(user_obj)
-    for tweet in response['data']:
-        app.process_tweet(tweet, response['includes']['tweets'])
+    try:
+        for user_obj in response['includes']['users']:
+            app.create_user(user_obj)
+            app.create_descr_entities(user_obj)
+        for tweet in response['data']:
+            ref_tweets = None
+            if "tweets" in response['includes']:
+                ref_tweets = response['includes']['tweets']
+            app.process_tweet(tweet, ref_tweets)
+    except KeyError:
+        print("****************ERRROR*******************")
+        print(response)
+        time.sleep(30)
 
 
 if __name__ == "__main__":
