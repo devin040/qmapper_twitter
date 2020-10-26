@@ -1,13 +1,13 @@
 import json
 import requests
-from crawler.twitter_config import BEARER_TOKEN
-from crawler.naked_api import App
-
-
+from twitter_config import BEARER_TOKEN, USER, PASSWORD
+from naked_api import App
+import inflater as inflater
+import sys
+sys.path.append("D:\cs598kcc\qmapper_twitter")
 #url = "https://api.twitter.com/2/tweets/search/stream?tweet.fields=source,author_id,created_at"
 
-payload = {}
-
+db_uri = "bolt://52.165.132.195:7687"
 
 
 #print(response.text.encode('utf8'))
@@ -60,7 +60,7 @@ def delete_all_rules(headers, bearer_token, rules):
 def set_rules(headers, delete, bearer_token):
     # You can adjust the rules if needed
     sample_rules = [
-        {"value": "#QAnon OR #QANON", "tag": "QANON Simple"},
+        {"value": "#DarkToLight OR #TheGreatAwakening OR #QAnon OR #Q OR #WWG1WGA OR #WWG1WGAWORLDWIDE OR #SaveTheChildren", "tag": "QANON Standard"},
     ]
     payload = {"add": sample_rules}
     response = requests.post(
@@ -86,17 +86,35 @@ def get_stream(headers, set, bearer_token):
                 response.status_code, response.text
             )
         )
+    app = App(db_uri, USER, PASSWORD)
+    stream_count = 0
     for response_line in response.iter_lines():
         if response_line:
+            stream_count += 1
             json_response = json.loads(response_line)
             print(json.dumps(json_response, indent=4, sort_keys=True))
+            for user in json_response['includes']['users']:
+                try:
+                    app.create_user(user)
+                    app.create_descr_entities(user)
+                except:
+                    print(f"Error while making user {user}")
+            ref_tweets = None
+            if 'tweets' in json_response['includes']:
+                ref_tweets = json_response['includes']['tweets']
+            try:
+                app.process_tweet(json_response['data'], ref_tweets)
+            except:
+                print(f"Error in processing Tweet")
+
 
 
 def main():
     bearer_token = BEARER_TOKEN
     headers = create_headers(bearer_token)
     rules = get_rules(headers, bearer_token)
-    #set = set_rules(headers, None, bearer_token)
+    delete = delete_all_rules(headers, bearer_token, rules)
+    set = set_rules(headers, None, bearer_token)
     get_stream(headers, None, bearer_token)
 
 

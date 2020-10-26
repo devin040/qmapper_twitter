@@ -5,6 +5,8 @@ def convertTimeString(timestr):
     return time.mktime(ts.timetuple())
 
 def find_ref_tweet_by_id(tweets, id):
+    if tweets is None:
+        return None
     for tweet in tweets:
         if tweet['id'] == id:
             return tweet
