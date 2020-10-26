@@ -7,7 +7,7 @@ import sys
 sys.path.append("D:\cs598kcc\qmapper_twitter")
 #url = "https://api.twitter.com/2/tweets/search/stream?tweet.fields=source,author_id,created_at"
 
-db_uri = "bolt://52.165.132.195:7687"
+db_uri = "bolt://localhost:7687"
 
 
 #print(response.text.encode('utf8'))

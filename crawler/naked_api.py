@@ -460,7 +460,7 @@ def get_full_user_from_mention(username):
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
     scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
-    host_name = "52.165.132.195"
+    host_name = "localhost"
     # neo4jqmap
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(scheme=scheme, host_name=host_name, port=port)
