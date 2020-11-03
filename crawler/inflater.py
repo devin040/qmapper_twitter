@@ -34,8 +34,10 @@ def user_process(app, response):
 def get_empty_tweets_from_db_and_request(app):
     tweets = app.get_empty_tweets()
     if len(tweets) < 20:
+        time.sleep(60)
         return None
     tweets_list = ",".join(tweets)
+    print(tweets)
     endpoint = 'https://api.twitter.com/2/tweets'
     headers = {'Authorization': "Bearer " + BEARER_TOKEN}
     params = {
@@ -56,6 +58,9 @@ def get_empty_tweets_from_db_and_request(app):
 
 def tweet_process(app, response):
     try:
+        if 'errors' in response:
+            for error in response['errors']:
+                app.setHiddenTweetById(error.get('value', None), error.get('title', 'Not Found Error'))
         for user_obj in response['includes']['users']:
             app.create_user(user_obj)
             app.create_descr_entities(user_obj)
@@ -67,7 +72,6 @@ def tweet_process(app, response):
     except KeyError:
         print("****************ERRROR*******************")
         print(response)
-        time.sleep(30)
 
 
 if __name__ == "__main__":
@@ -86,10 +90,12 @@ if __name__ == "__main__":
         if count == 3:
             count = 0
             app.merge_mentions_and_authors()
-        response = get_users_from_db_and_request(app)
-        if response is not None:
-            user_process(app, response)
-        response = get_empty_tweets_from_db_and_request(app)
-        if response is not None:
-            tweet_process(app, response)
+        u_response = get_users_from_db_and_request(app)
+        if u_response is not None:
+            user_process(app, u_response)
+        t_response = get_empty_tweets_from_db_and_request(app)
+        if t_response is not None:
+            tweet_process(app, t_response)
+        if t_response is None and u_response is None:
+            time.sleep(60)
         app.close()

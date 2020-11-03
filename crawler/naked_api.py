@@ -427,14 +427,30 @@ class App:
 
     @staticmethod
     def _get_empty_tweets(tx):
-        query = "Match (t:Tweet) where t.text is null RETURN t.id as id LIMIT 100 "
+        query = "Match (t:Tweet) where t.text is null RETURN t.id as id ORDER BY t.id desc LIMIT 100 "
         result = tx.run(query)
         return [record["id"] for record in result]
+
+    def setHiddenTweetById(self, tweet_id, message):
+        if tweet_id is None:
+            return
+        with self.driver.session() as session:
+                result = session.write_transaction(self._set_hidden_tweet, tweet_id, message)
+                if len(result) > 0:
+                    return True
+                else:
+                    return False
+    
+    @staticmethod
+    def _set_hidden_tweet(tx, tweet_id, message):
+        query = "Match (t:Tweet) where t.id = $tweet_id set t.error = $message, t.text='~' return t.id as id "
+        result = tx.run(query, tweet_id=tweet_id, message=message)
+        return [record['id'] for record in result]
 
     def merge_mentions_and_authors(self):
         with self.driver.session() as session:
             session.run("MATCH (n1:User),(n2:User) "
-                        "WHERE n1.username = n2.username and id(n1) <> id(n2) "
+                        "WHERE n1.username = n2.username and id(n1) < id(n2) "
                         "With [n1,n2] as ns "
                         "CALL apoc.refactor.mergeNodes(ns, {properties:'discard', mergeRels:true}) YIELD node "
                         "RETURN node"
