@@ -38,7 +38,7 @@ def top_users():
         result = session.run("""
             MATCH (a:User) 
             WHERE a.username IS NOT NULL AND a.follower_count IS NOT NULL
-            RETURN a.username, a.follower_count 
+            RETURN a.username as username, a.follower_count as follower_count
             ORDER BY a.follower_count DESC
         """)
         return create_response(data={"data": result.data()})

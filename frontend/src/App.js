@@ -1,32 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
   Container, 
   Row, 
-  Col, 
-  Table, 
-  Dropdown, 
-  DropdownToggle, 
-  DropdownMenu, 
-  DropdownItem 
+  Col
 } from 'reactstrap';
+import { User } from './components';
 
-import apiWrapper from './api'
 import './style/App.css';
 import viz from './randomviz.png' 
 
 function App() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  useEffect(() => {
-    async function fetchData() {
-      let testResult = await apiWrapper.testMethod();
-      console.log(testResult.data); 
-    }
-    fetchData();
-  })
-
-  const toggle = () => setDropdownOpen(prevState => !prevState);
-
   return (
     <Container fluid>
       <Row>
@@ -49,30 +32,7 @@ function App() {
         <Col sm="12" md="4">
           <Row>
             <Col>
-              <Table bordered>
-                <thead>
-                  <tr>
-                    <th>Top Users</th>
-                    <th>
-                      <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                        <DropdownToggle caret>
-                          Filter
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          <DropdownItem>Filter 1</DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <td>User 1</td>
-                    <td>User 2</td>
-                  </tr>
-                </tbody>
-              </Table>
+              <User />
             </Col>
           </Row>
 

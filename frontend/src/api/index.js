@@ -36,9 +36,22 @@ async function requestWrapper({
 const apiWrapper = {
     async testMethod() {
         return requestWrapper({
-            path: '/',
-            method: "GET"
+          path: '/',
+          method: "GET"
         })
+    },
+
+    async getTopUsers() {
+      let fetched = await requestWrapper({
+        path: '/topusers',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
     }
 }
 
