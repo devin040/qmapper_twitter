@@ -14,8 +14,21 @@ def index():
 
 @main.route("/data")
 def data():
+    offset = int(request.args.get('offset'))
+    limit = int(request.args.get('limit'))
+    if offset is None or limit is None:
+        return create_response(status=400, message="Required parameters not present")
+    
+    query = """
+        MATCH (n)-[r]->(m)
+        RETURN n, r, m
+        ORDER BY n.id, r.id, m.id
+        SKIP {}
+        LIMIT {}
+    """.format(offset, limit)
+
     with db.get_db().session() as session:
-        result = session.run("MATCH (n) RETURN n")
+        result = session.run(query)
         return create_response(data={"data": result.data()})
 
 
@@ -23,8 +36,8 @@ def data():
 def top_users():
     with db.get_db().session() as session:
         result = session.run("""
-            MATCH (a:Author) 
-            WHERE a.username IS NOT NULL 
+            MATCH (a:User) 
+            WHERE a.username IS NOT NULL AND a.follower_count IS NOT NULL
             RETURN a.username, a.follower_count 
             ORDER BY a.follower_count DESC
         """)
