@@ -1,26 +1,7 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<script src="https://d3js.org/d3.v2.min.js?2.9.3"></script>
-<style>
+import React, {Component} from 'react';
+import * as d3 from "d3";
 
-.link {
-  stroke: #aaa;
-}
-
-.node text {
-stroke:#333;
-cursos:pointer;
-}
-
-.node circle{
-stroke:#fff;
-stroke-width:3px;
-fill: #ccc;
-}
-
-</style>
-<body>
-<script>
+function Vis(){
 
 var width = 960,
     height = 500
@@ -80,3 +61,5 @@ d3.json("d3test2.json", function(json) {
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
+}
+export defauly Vis;
