@@ -62,4 +62,4 @@ d3.json("d3test2.json", function(json) {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 }
-export defauly Vis;
+export default Vis;
