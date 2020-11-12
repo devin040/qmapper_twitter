@@ -120,6 +120,6 @@ if __name__ == "__main__":
         m_response = get_mentioned_users_from_db(app)
         if m_response is not None:
             user_process(app, m_response)
-        if t_response is None and u_response is None:
+        if t_response is None and u_response is None and m_response is None:
             time.sleep(60)
         app.close()
