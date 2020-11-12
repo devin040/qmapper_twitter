@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import * as d3 from "d3";
+export default Vis;
 
 function Vis(){
 
@@ -62,4 +63,4 @@ d3.json("d3test2.json", function(json) {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
   }
-export default Vis;
+           
