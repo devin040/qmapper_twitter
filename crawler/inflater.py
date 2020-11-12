@@ -31,6 +31,25 @@ def user_process(app, response):
         print(user_obj)
 
 
+def get_mentioned_users_from_db(app):
+    users = app.get_mentioned_only_users()
+    if len(users) < 20:
+        return None
+    users_list = ",".join(users)
+    endpoint = 'https://api.twitter.com/2/users/by'
+    headers = {'Authorization': "Bearer " + BEARER_TOKEN}
+    params = {
+        'usernames': users_list,
+        'user.fields': 'created_at,description,entities,public_metrics,username,verified,location',
+    }
+    res = requests.get(endpoint, params=params, headers=headers)
+    while res.status_code != 200:
+        print("Too many requests .. sleeping")
+        time.sleep(60 * 3)
+        res = requests.get(endpoint, params=params, headers=headers)
+    res = res.json()
+    return res
+
 def get_empty_tweets_from_db_and_request(app):
     tweets = app.get_empty_tweets()
     if len(tweets) < 20:
@@ -74,6 +93,8 @@ def tweet_process(app, response):
         print(response)
 
 
+
+
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
     scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
@@ -96,6 +117,9 @@ if __name__ == "__main__":
         t_response = get_empty_tweets_from_db_and_request(app)
         if t_response is not None:
             tweet_process(app, t_response)
+        m_response = get_mentioned_users_from_db(app)
+        if m_response is not None:
+            user_process(app, m_response)
         if t_response is None and u_response is None:
             time.sleep(60)
         app.close()

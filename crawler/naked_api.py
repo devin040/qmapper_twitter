@@ -420,6 +420,17 @@ class App:
         result = tx.run(query)
         return [record["id"] for record in result]
 
+    def get_mentioned_only_users(self):
+        with self.driver.session() as session:
+            result = session.read_transaction(self._get_mentioned_only_users)
+            return result
+
+    @staticmethod
+    def _get_mentioned_only_users(tx):
+        query = "Match (u:User) where u.id is null and u.username is not null RETURN u.username as username LIMIT 100"
+        result = tx.run(query)
+        return [record['username'] for record in result]
+
     def get_empty_tweets(self):
         with self.driver.session() as session:
             result = session.read_transaction(self._get_empty_tweets)
