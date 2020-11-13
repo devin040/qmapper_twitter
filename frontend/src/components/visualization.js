@@ -66,5 +66,5 @@ d3.json("d3test2.json", function(json) {
   });
 });
 }
-export default Vis;
+
            
