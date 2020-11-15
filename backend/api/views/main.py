@@ -44,6 +44,18 @@ def top_users():
         return create_response(data={"data": result.data()})
 
 
+@main.route("/toptweetusers")
+def top_tweet_users():
+    with db.get_db().session() as session:
+        result = session.run("""
+            MATCH (a:User) 
+            WHERE a.username IS NOT NULL AND a.tweet_count IS NOT NULL
+            RETURN a.username as username, a.tweet_count as tweet_count
+            ORDER BY a.tweet_count DESC
+        """)
+        return create_response(data={"data": result.data()})
+
+
 @main.route("/metrics")
 def metrics():
     pass

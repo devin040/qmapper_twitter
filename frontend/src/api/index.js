@@ -52,6 +52,19 @@ const apiWrapper = {
       } else {
         return null
       }
+    },
+
+    async getTopTweetUsers() {
+      let fetched = await requestWrapper({
+        path: '/toptweetusers',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
     }
 }
 
