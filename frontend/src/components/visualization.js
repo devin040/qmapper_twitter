@@ -8,7 +8,7 @@ var width = 960;
 var height = 600;
 var svg = d3.select("svg");
 svg.attr("width", width).attr("height", height);
-    
+
  var label = function(d) {
     if (d.label === "author") {
         return "1";
@@ -19,12 +19,12 @@ svg.attr("width", width).attr("height", height);
       }else{
         return "4";}
       }
-    
+
 var color = d3.scaleOrdinal(d3.schemeCategory20);
-    
+
 d3.json("d3test2.json", function(error, graph) {
   if error throw error;
- 
+
   var lines = svg.append("g")
       .attr("class", "link")
       .selectAll("line")
@@ -39,13 +39,13 @@ d3.json("d3test2.json", function(error, graph) {
     .enter().append("circle")
     .attr("r",5)
     .attr("fill", label);
-      
+
  var linkForce = d3.forceLink()
    .links(graph.links)
    .id(function(d) {
        return d.id;
    });
-    
+
   var simulation = d3.forceSimulation(graph.nodes)
     .force("link", linkForce)
     .force("charge", d3.forceManyBody())
@@ -61,7 +61,6 @@ d3.json("d3test2.json", function(error, graph) {
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
-  }
+  )}
  }
 }
-           
