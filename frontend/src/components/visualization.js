@@ -61,6 +61,10 @@ d3.json("d3test2.json", function(error, graph) {
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
+<<<<<<< HEAD
   )}
+=======
+  })
+>>>>>>> 144f6a0c3b0192c9416c7532c1000e01c46fc624
  }
 }
