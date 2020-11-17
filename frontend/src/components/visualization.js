@@ -13,7 +13,7 @@ var svg = d3.select("body").append("svg")
 
 var force = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
-    .force("link", d3.forceLink(links))
+   
     .force("center", d3.forceCenter());
     
 d3.json("d3test2.json", function(json) {
