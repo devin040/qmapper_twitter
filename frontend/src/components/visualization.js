@@ -22,9 +22,8 @@ svg.attr("width", width).attr("height", height);
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-d3.json("d3test2.json", function(error, graph) {
-  if error throw error;
-
+d3.json("d3test2.json", function(graph) {
+  
   var lines = svg.append("g")
       .attr("class", "link")
       .selectAll("line")
