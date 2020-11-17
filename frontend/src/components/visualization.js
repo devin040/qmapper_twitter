@@ -11,19 +11,17 @@ svg.attr("width", width).attr("height", height);
 
  var label = function(d) {
     if (d.label === "author") {
-        return "1";
+        return "red";
       }else if (d.label === "tweet") {
-        return "2";
+        return "blue";
       }else if (d.label === "context_entity") {
-        return "3";
+        return "green";
       }else{
-        return "4";}
+        return "purple";}
       }
 
-var color = d3.scaleOrdinal(d3.schemeCategory20);
-
 d3.json("d3test2.json", function(graph) {
-  
+
   var lines = svg.append("g")
       .attr("class", "link")
       .selectAll("line")
@@ -63,4 +61,6 @@ d3.json("d3test2.json", function(graph) {
 
   }
  })
+ return( <body> svg <body/>)
+ )
 }
