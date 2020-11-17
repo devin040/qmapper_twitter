@@ -14,9 +14,9 @@ var svg = d3.select("body").append("svg")
 var force = d3.forceSimulation()
     .force("y", .05)
     .force("x", .05)
-    .linkDistance(100)
-    .charge(-100)
-    .size([width, height]);
+    
+    .force("charge",-100)
+    ;
 
 d3.json("d3test2.json", function(json) {
   force
