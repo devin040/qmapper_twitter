@@ -75,5 +75,5 @@ d3.json("d3test.json", function(error, graph) {
         })
   }
 });
-  return null;
+  return svg;
 }
