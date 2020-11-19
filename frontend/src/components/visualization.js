@@ -3,9 +3,10 @@ import * as d3 from "d3";
 export default Vis;
 
 function Vis(){
-  var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
+var width = 960;
+var height = 600;
+var svg = d3.select("svg");
+svg.attr("width", width).attr("height", height);
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.id; }))
