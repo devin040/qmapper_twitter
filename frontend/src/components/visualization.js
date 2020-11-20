@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
+mport React, {useRef, useEffect} from 'react';
 import * as d3 from "d3";
-export default Vis;
-
-function Vis(){
-    useEffect(() => {
+export const Vis{
+    const d3Container = useRef(null);
+    useEffect(
+        () => {
 var width = 960;
 var height = 600;
-var svg = d3.select("svg");
+var svg = d3.select(d3Container.current);
 svg.attr("width", width).attr("height", height);
 
 var simulation = d3.forceSimulation()
@@ -76,7 +76,15 @@ d3.json("d3test.json", function(error, graph) {
         })
   }
 });
-    }
+},
+[d3Container.current])
 
-  return <svg width="960" height="600"></svg>;
+  return (
+    <svg 
+    className = "d3-component"
+    width={960}
+    height={600}
+    ref = {d3Container}
+    />
+  );
 }
