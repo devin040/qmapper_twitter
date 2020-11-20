@@ -78,5 +78,5 @@ d3.json("d3test.json", function(error, graph) {
 });
     }
 
-  return <svg width="960" height="600"></svg>
+  return <svg width="960" height="600"></svg>;
 }
