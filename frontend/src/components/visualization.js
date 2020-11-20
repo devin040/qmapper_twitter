@@ -2,7 +2,7 @@ import React, {useRef, useEffect} from 'react';
 import * as d3 from "d3";
 
 
-function Vis {
+function Vis() {
     const d3Container = useRef(null);
     useEffect(
         () => {
