@@ -1,6 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 import * as d3 from "d3";
-export default Vis;
+
 
 const Vis = () => {
     const d3Container = useRef(null);
@@ -90,3 +90,4 @@ d3.json("d3test.json", function(error, graph) {
     />
   );
 }
+export default Vis;
