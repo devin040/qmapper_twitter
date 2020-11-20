@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import * as d3 from "d3";
 export default Vis;
 
-const Vis = {props} =>{
+function Vis(){
     useEffect(() => {
 var width = 960;
 var height = 600;
