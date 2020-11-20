@@ -1,8 +1,9 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import * as d3 from "d3";
 export default Vis;
 
-function Vis(){
+const Vis() = {props} =>{
+    useEffect(() => {
 var width = 960;
 var height = 600;
 var svg = d3.select("svg");
@@ -75,6 +76,7 @@ d3.json("d3test.json", function(error, graph) {
         })
   }
 });
+    }
 
-  return svg;
+  return <svg width="960" height="600"></svg>
 }
