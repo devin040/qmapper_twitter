@@ -1,65 +1,93 @@
-import React, {Component} from 'react';
+import React, {useRef, useEffect} from 'react';
 import * as d3 from "d3";
 
-function Vis(){
 
-var width = 960,
-    height = 500
+function Vis() {
+    const d3Container = useRef(null);
+    useEffect(
+        () => {
+var width = 960;
+var height = 600;
+var svg = d3.select(d3Container.current);
+svg.attr("width", width).attr("height", height);
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2));
 
-var force = d3.layout.force()
-    .gravity(.05)
-    .distance(100)
-    .charge(-100)
-    .size([width, height]);
+d3.json("d3test.json", function(error, graph) {
+  if (error) throw error;
 
-d3.json("d3test2.json", function(json) {
-  force
-      .nodes(json.nodes)
-      .links(json.links)
-      .start();
-
-  var link = svg.selectAll(".link")
-      .data(json.links)
+  var link = svg.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph.links)
     .enter().append("line")
-      .attr("class", "link")
-      //.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+      .attr("stroke-width", 1);
 
-  var node = svg.selectAll(".node")
-      .data(json.nodes)
+  var node = svg.append("g")
+      .attr("class", "nodes")
+    .selectAll("g")
+    .data(graph.nodes)
     .enter().append("g")
-      .attr("class", "node")
-      .call(force.drag);
 
-  var label = function(d) {
-    if (d.label === "author") {
-        return "green";
-      }else if (d.label === "tweet") {
-        return "purple";
-      }else if (d.label === "context_entity") {
-        return "red";
-      }else{
-        return "blue";}
-      }
+    var label = function(d) {
+       if (d.label === "author") {
+           return "red";
+         }else if (d.label === "tweet") {
+           return "blue";
+         }else if (d.label === "context_entity") {
+           return "green";
+         }else{
+           return "purple";}
+         }
 
-  node.append("circle")
-      .attr("r","5")
-      .style("fill", label)
-      .append("title")
-      .text(function(d) { return d.text; });
+  var circles = node.append("circle")
+      .attr("r", 5)
+      .attr("fill", label);
 
-  node.append("text")
-      .attr("dx", 12)
-      .attr("dy", ".35em")
-      .text(function(d) { return d.name });
 
-  force.on("tick", function() {
-    link.attr("x1", function(d) { return d.source.x; })
+  var lables = node.append("text")
+      .text(function(d) {
+        return d.name;
+      })
+      .attr('x', 6)
+      .attr('y', 3);
+
+  node.append("title")
+      .text(function(d) { return d.id; });
+
+  simulation
+      .nodes(graph.nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph.links);
+
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        })
+  }
+});
+},
+[d3Container.current])
+
+  return (
+    <svg 
+    className = "d3-component"
+    width={960}
+    height={600}
+    ref = {d3Container}
+    />
+  );
 }
-export defauly Vis;
+export default Vis;

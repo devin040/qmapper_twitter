@@ -4,7 +4,7 @@ import {
   Row, 
   Col
 } from 'reactstrap';
-import { User } from './components';
+import { User, Vis } from './components';
 
 import './style/App.css';
 import viz from './randomviz.png' 
@@ -26,7 +26,7 @@ function App() {
         </Col>
 
         <Col sm="12" md="4">
-          <img src={viz} alt="random viz"/>
+          <Vis />
         </Col>
 
         <Col sm="12" md="4">
