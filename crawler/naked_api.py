@@ -467,6 +467,28 @@ class App:
                         "RETURN node"
                         )
 
+    def make_interacts_rels(self):
+        with self.driver.session() as session:
+            session.run("""
+                MATCH (u1:User)-[:Tweets]->(t1:Tweet)-[:RETWEET|REPLY_TO|QUOTES]->(t2:Tweet)<-[:Tweets]-(u2:User)
+                WHERE NOT (u1)-[:INTERACTS]->(u2)
+                WITH u1, u2
+                MERGE (u1)-[:INTERACTS]->(u2)
+                Return u1.username, u2.username
+            """)
+
+    def make_weighted_interacts_rels(self):
+        with self.driver.session() as session:
+            session.run("""
+                MATCH (u1:User)-[:Tweets]->(t1:Tweet)-[:RETWEET|REPLY_TO|QUOTES]->(t2:Tweet)<-[:Tweets]-(u2:User)
+                Where u1<>u2
+                with DISTINCT u1, u2, count(t2) as ct
+                Order by ct desc
+                MERGE (u1)-[i:INTERACTS_W]->(u2)
+                ON CREATE SET i.num = ct
+                ON MATCH SET i.num = ct
+            """)
+
 
 def get_full_user_from_mention(username):
     res = requests.get(f"https://api.twitter.com/2/users/by/username/{username}",
