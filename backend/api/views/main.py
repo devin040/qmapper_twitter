@@ -56,6 +56,55 @@ def top_tweet_users():
         return create_response(data={"data": result.data()})
 
 
+@main.route("/simpletrending")
+def simple_trending():
+    with db.get_db().session() as session:
+        result = session.run("""
+            MATCH (t:Tweet)-[r:CONTEXT]->(e:Entity) 
+            WITH t,r,e 
+            ORDER BY t.id DESC 
+            LIMIT 1000 
+            RETURN count(r) AS indegree, e.data AS topic 
+            ORDER BY indegree DESC
+        """)
+        return create_response(data={"data": result.data()})
+
+@main.route("/betweeness")
+def betweeness():
+    with db.get_db().session() as session:
+        result = session.run("""
+            CALL gds.betweenness.stream({nodeProjection: "User", relationshipProjection:"INTERACTS"})
+            YIELD nodeId, score
+            RETURN gds.util.asNode(nodeId).username AS name, score, gds.util.asNode(nodeId).follower_count as followers
+            ORDER BY score DESC
+            LIMIT 50
+        """)
+        return create_response(data={"data": result.data()})
+
+@main.route("/page_rank")
+def page_rank():
+    with db.get_db().session() as session:
+        result = session.run("""
+            CALL gds.pageRank.stream({nodeProjection: "User", relationshipProjection:"INTERACTS_W"})
+            YIELD nodeId, score
+            RETURN gds.util.asNode(nodeId).username AS name, score, gds.util.asNode(nodeId).follower_count as followers
+            ORDER BY score DESC
+            LIMIT 50
+        """)
+        return create_response(data={"data": result.data()})
+
+@main.route("/page_rank_weighted")
+def page_rank_weighted():
+    with db.get_db().session() as session:
+        result = session.run("""
+            CALL gds.pageRank.stream({nodeProjection: "User", relationshipProjection:"INTERACTS_W", relationshipProperties:"num", relationshipWeightProperty:"num"})
+            YIELD nodeId, score
+            RETURN gds.util.asNode(nodeId).username AS name, score, gds.util.asNode(nodeId).follower_count as followers
+            ORDER BY score DESC
+            LIMIT 50
+        """)
+        return create_response(data={"data": result.data()})
+
 @main.route("/metrics")
 def metrics():
     pass

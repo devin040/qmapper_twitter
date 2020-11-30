@@ -35,18 +35,18 @@ def get_qdrops_and_save():
 
 
 
-get_qdrops_and_save()
+#get_qdrops_and_save()
 
-# qdrops = db.session().run("Match (q:QPOST) return q.text as text LIMIT 20")
-# nlp = spacy.load('en_core_web_sm')
-# for drop in qdrops:
-#     doc = nlp(drop['text'])
-#     print(drop['text'])
-#     print("****************************************")
-#     for token in doc:
-#         if token.pos_ == "PROPN":
-#             print(token.lemma_)
-#     print('----------')
-#     for ent in doc.ents:
-#         print(ent.text, ent.label_)
-#     print('*********************************************')
+qdrops = db.session().run("Match (q:QPOST) return q.text as text LIMIT 20")
+nlp = spacy.load('en_core_web_sm')
+for drop in qdrops:git 
+    doc = nlp(drop['text'])
+    print(drop['text'])
+    print("****************************************")
+    for token in doc:
+        if token.pos_ == "PROPN":
+            print(token.lemma_)
+    print('----------')
+    for ent in doc.ents:
+        print(ent.text, ent.label_)
+    print('*********************************************')
