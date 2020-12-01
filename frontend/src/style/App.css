@@ -6,3 +6,11 @@
   font-family: 'Montserrat Subrayada';
 }
 
+#user-header {
+  border-right: none;
+}
+
+#user-dropdown {
+  border-left: none;
+}
+

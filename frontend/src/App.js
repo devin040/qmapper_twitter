@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Container, 
   Row, 
-  Col
+  Col,
+  TabContent,
+  TabPane,
+  Nav,
+  NavItem,
+  NavLink
 } from 'reactstrap';
-import { User, Vis, DegreeCharts } from './components';
+import classnames from 'classnames'
+import { 
+  User, 
+  Vis, 
+  DegreeCharts,
+  TopTrending
+} from './components';
 
 import './style/App.css';
-import viz from './randomviz.png' 
 
 function App() {
+  const [activeTab, setActiveTab] = useState('1');
+
+  const toggleTab = tab => {
+    if(activeTab !== tab) setActiveTab(tab);
+  }
+
+
   return (
     <Container fluid>
       <Row>
@@ -19,17 +36,22 @@ function App() {
       </Row>
 
       <Row>
-        <Col sm="12" md="4">
-          <p>Average Degree Sample: 3.04</p>
-          <p>Density: 0.06</p>
-          <p>Diameter: 6</p>
+        <Col sm="12" md="6">
+          <Row>
+            <Col>
+              <Vis />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <p>Average Degree Sample: 3.04</p>
+              <p>Density: 0.06</p>
+              <p>Diameter: 6</p>
+            </Col>
+          </Row>
         </Col>
 
-        <Col sm="12" md="4">
-          <Vis />
-        </Col>
-
-        <Col sm="12" md="4">
+        <Col sm="12" md="6">
           <Row>
             <Col>
               <User />
@@ -37,15 +59,37 @@ function App() {
           </Row>
 
           <Row>
-            <Col sm="12" md="6">
-              <h2>Trending Topics</h2>
-              <p>#Topic1</p>
-              <p>#Topic2</p>
-            </Col>
-            <Col sm="12" md="6">
-              <h2>QAnon Trending Topics</h2>
-              <p>#Topic1</p>
-              <p>#Topic2</p>
+            <Col>
+              <Nav tabs>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '1' })}
+                    onClick={() => { toggleTab('1'); }}
+                  >
+                    Top Topics
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: activeTab === '2' })}
+                    onClick={() => { toggleTab('2'); }}
+                  >
+                    Associated QDrops
+                  </NavLink>
+                </NavItem>
+              </Nav>
+              <TabContent activeTab={activeTab}>
+                <TabPane tabId="1">
+                  <Row>
+                    <Col>
+                      <TopTrending />
+                    </Col>
+                  </Row>
+                </TabPane>
+                <TabPane tabId="2">
+
+                </TabPane>
+              </TabContent>
             </Col>
           </Row>
         </Col>

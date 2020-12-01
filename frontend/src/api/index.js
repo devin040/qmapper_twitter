@@ -67,6 +67,19 @@ const apiWrapper = {
       }
     },
 
+    async getTopTrending() {
+      let fetched = await requestWrapper({
+        path: '/simpletrending',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
+    },
+
     async getIndegreeDistro() {
         let fetched = await requestWrapper({
             path: "/indegree",
