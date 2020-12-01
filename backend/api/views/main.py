@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from api.core import create_response, serialize_list
 from api.models import db
 from api.models.louvain import Louvain
+from api.models.degreedistro import DegreeCentrality
 
 main = Blueprint("main", __name__)
 
@@ -38,7 +39,7 @@ def top_users():
     with db.get_db().session() as session:
         result = session.run("""
             MATCH (a:User) 
-            WHERE a.username IS NOT NULL AND a.follower_count IS NOT NULL
+            WHERE (a)-[:Tweets]-() and a.username IS NOT NULL AND a.follower_count IS NOT NULL
             RETURN a.username as username, a.follower_count as follower_count
             ORDER BY a.follower_count DESC
         """)
@@ -120,6 +121,20 @@ def louvain_detail():
     louv.close()
     return create_response(data={"data": response})
 
+
+@main.route("/indegree")
+def indegree_ccdf():
+    d = DegreeCentrality()
+    response = d.get_indegree()
+    d.close()
+    return create_response(data={"data": response})
+
+@main.route("/outdegree")
+def outdegree_ccdf():
+    d = DegreeCentrality()
+    response = d.get_outdegree()
+    d.close()
+    return create_response(data={"data": response})
 
 @main.route("/metrics")
 def metrics():

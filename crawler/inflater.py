@@ -111,8 +111,8 @@ if __name__ == "__main__":
         if count == 3:
             count = 0
             app.merge_mentions_and_authors()
-            app.make_interacts_rels()
-            app.make_weighted_interacts_rels()
+            # app.make_interacts_rels()
+            # app.make_weighted_interacts_rels()
         u_response = get_users_from_db_and_request(app)
         if u_response is not None:
             user_process(app, u_response)
