@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from api.core import create_response, serialize_list
 from api.models import db
+from api.models.louvain import Louvain
 
 main = Blueprint("main", __name__)
 
@@ -104,6 +105,21 @@ def page_rank_weighted():
             LIMIT 50
         """)
         return create_response(data={"data": result.data()})
+
+@main.route("/louvainstats")
+def louvain_stats():
+    louv = Louvain()
+    response = louv.get_stats()
+    louv.close()
+    return create_response(data={"data": response})
+
+@main.route("/louvaindetail")
+def louvain_detail():
+    louv = Louvain()
+    response = louv.get_full_communities()
+    louv.close()
+    return create_response(data={"data": response})
+
 
 @main.route("/metrics")
 def metrics():
