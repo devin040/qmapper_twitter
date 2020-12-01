@@ -4,7 +4,7 @@ import {
   Row, 
   Col
 } from 'reactstrap';
-import { User, Vis } from './components';
+import { User, Vis, DegreeCharts } from './components';
 
 import './style/App.css';
 import viz from './randomviz.png' 
@@ -50,6 +50,7 @@ function App() {
           </Row>
         </Col>
       </Row>
+      <DegreeCharts/>
     </Container>
   );
 }
