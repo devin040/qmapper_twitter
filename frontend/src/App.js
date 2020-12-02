@@ -14,18 +14,23 @@ import {
   User, 
   Vis, 
   DegreeCharts,
-  TopTrending
+  TopTrending,
+  Betweeness
 } from './components';
 
 import './style/App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('1');
+  const [mActiveTab, setMActiveTab] = useState('1');
 
   const toggleTab = tab => {
     if(activeTab !== tab) setActiveTab(tab);
   }
 
+  const toggleMetricTab = tab => {
+    if(mActiveTab !== tab) setMActiveTab(tab);
+  }
 
   return (
     <Container fluid>
@@ -36,22 +41,60 @@ function App() {
       </Row>
 
       <Row>
-        <Col sm="12" md="6">
+        <Col sm="12" md="8">
           <Row>
             <Col>
-              <Vis />
+              <Row>
+                <Col>
+                  <Vis />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <DegreeCharts />
+                </Col>
+              </Row>
             </Col>
           </Row>
-          <Row>
+
+          <Row className="mt-5">
             <Col>
-              <p>Average Degree Sample: 3.04</p>
-              <p>Density: 0.06</p>
-              <p>Diameter: 6</p>
+              <Nav tabs>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: mActiveTab === '1' })}
+                    onClick={() => { toggleMetricTab('1'); }}
+                  >
+                    Betweenness
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: mActiveTab === '2' })}
+                    onClick={() => { toggleMetricTab('2'); }}
+                  >
+                    Page Rank
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    className={classnames({ active: mActiveTab === '3' })}
+                    onClick={() => { toggleMetricTab('3'); }}
+                  >
+                    Page Rank Weighted
+                  </NavLink>
+                </NavItem>
+              </Nav>
+              <TabContent activeTab={mActiveTab}>
+                <TabPane tabId="1">
+                  <Betweeness />
+                </TabPane>
+              </TabContent>
             </Col>
           </Row>
         </Col>
 
-        <Col sm="12" md="6">
+        <Col sm="12" md="4">
           <Row>
             <Col>
               <User />
@@ -94,7 +137,6 @@ function App() {
           </Row>
         </Col>
       </Row>
-      <DegreeCharts/>
     </Container>
   );
 }
