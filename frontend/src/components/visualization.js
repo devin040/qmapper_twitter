@@ -109,21 +109,21 @@ function run(graph) {
 }
 
 function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart()
+  if (!currentEvent.active) simulation.alphaTarget(0.3).restart()
   d.fx = d.x
   d.fy = d.y
 //  simulation.fix(d);
 }
 
 function dragged(d) {
-  d.fx = d3.event.x
-  d.fy = d3.event.y
+  d.fx = currentEvent.x
+  d.fy = currentEvent.y
 //  simulation.fix(d, d3.event.x, d3.event.y);
 }
 
 function dragended(d) {
-  d.fx = d3.event.x
-  d.fy = d3.event.y
+  d.fx = currentEvent.x
+  d.fy = currentEvent.y
   if (!d3.event.active) simulation.alphaTarget(0);
   //simulation.unfix(d);
 }
