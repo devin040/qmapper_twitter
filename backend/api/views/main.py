@@ -3,6 +3,9 @@ from api.core import create_response, serialize_list
 from api.models import db
 from api.models.louvain import Louvain
 from api.models.degreedistro import DegreeCentrality
+from sklearn.feature_extraction import text
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 
 main = Blueprint("main", __name__)
 
@@ -20,7 +23,7 @@ def data():
     limit = int(request.args.get('limit'))
     if offset is None or limit is None:
         return create_response(status=400, message="Required parameters not present")
-    
+
     query = """
         MATCH (n)-[r]->(m)
         RETURN n, r, m
@@ -38,7 +41,7 @@ def data():
 def top_users():
     with db.get_db().session() as session:
         result = session.run("""
-            MATCH (a:User) 
+            MATCH (a:User)
             WHERE (a)-[:Tweets]-() and a.username IS NOT NULL AND a.follower_count IS NOT NULL
             RETURN a.username as username, a.follower_count as follower_count
             ORDER BY a.follower_count DESC
@@ -50,7 +53,7 @@ def top_users():
 def top_tweet_users():
     with db.get_db().session() as session:
         result = session.run("""
-            MATCH (a:User) 
+            MATCH (a:User)
             WHERE a.username IS NOT NULL AND a.tweet_count IS NOT NULL
             RETURN a.username as username, a.tweet_count as tweet_count
             ORDER BY a.tweet_count DESC
@@ -62,11 +65,11 @@ def top_tweet_users():
 def simple_trending():
     with db.get_db().session() as session:
         result = session.run("""
-            MATCH (t:Tweet)-[r:CONTEXT]->(e:Entity) 
-            WITH t,r,e 
-            ORDER BY t.id DESC 
-            LIMIT 1000 
-            RETURN count(r) AS indegree, e.data AS topic 
+            MATCH (t:Tweet)-[r:CONTEXT]->(e:Entity)
+            WITH t,r,e
+            ORDER BY t.id DESC
+            LIMIT 1000
+            RETURN count(r) AS indegree, e.data AS topic
             ORDER BY indegree DESC
         """)
         return create_response(data={"data": result.data()})
@@ -139,3 +142,52 @@ def outdegree_ccdf():
 @main.route("/metrics")
 def metrics():
     pass
+    
+@main.route("/trending_topics")
+def trending_topics():
+    with db.get_db().session() as session:
+        result = session.run("""
+            MATCH (t:Tweet)
+            RETURN t.text as text
+            ORDER BY t.id DESC
+            LIMIT 1000
+
+        """)
+        improved_stopwords = text.ENGLISH_STOP_WORDS.union(["http", "https", "www", "amp", "html"])
+
+        unnested_result = [d['text'] for d in result.data() if d['text'] is not None and len(d['text']) > 0]
+
+        count_vectorizer = CountVectorizer(max_df = 0.3, min_df = 0, stop_words = improved_stopwords, strip_accents = 'ascii')
+        doc_term_matrix = count_vectorizer.fit_transform(unnested_result)
+
+        LDA = LatentDirichletAllocation(n_components = 5)
+        LDA.fit(doc_term_matrix)
+
+        top_five = []
+        for i,topic in enumerate(LDA.components_):
+            top_five.append([count_vectorizer.get_feature_names()[i] for i in topic.argsort()[-15:]])
+
+        return create_response(data={"data": top_five})
+
+@main.route("/qpost_topics")
+def qpost_topics():
+    with db.get_db().session() as session:
+        result = session.run("""
+            MATCH (q:QPOST)
+            RETURN q.text as text
+        """)
+
+        improved_stopwords = text.ENGLISH_STOP_WORDS.union(["http", "https", "www", "amp", "html"])
+
+        unnested_result = [d['text'] for d in result.data() if d['text'] is not None and len(d['text']) > 0]
+        count_vectorizer = CountVectorizer(max_df = 0.2, min_df = 0, stop_words = improved_stopwords, strip_accents = 'ascii')
+        doc_term_matrix = count_vectorizer.fit_transform(unnested_result)
+
+        LDA = LatentDirichletAllocation(n_components = 5)
+        LDA.fit(doc_term_matrix)
+
+        top_five = []
+        for i,topic in enumerate(LDA.components_):
+            top_five.append([count_vectorizer.get_feature_names()[i] for i in topic.argsort()[-15:]])
+
+        return create_response(data={"data": top_five})
