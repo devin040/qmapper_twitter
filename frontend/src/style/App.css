@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@700&display=swap');
 
+#container {
+  background-color: #FAFAFA;
+}
+
 #tool-header {
   color: #112B6F;
   font-size: 44pt;

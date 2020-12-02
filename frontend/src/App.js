@@ -15,7 +15,9 @@ import {
   Vis, 
   DegreeCharts,
   TopTrending,
-  Betweeness
+  Betweeness,
+  PageRank,
+  PageRankWeight
 } from './components';
 
 import './style/App.css';
@@ -33,7 +35,7 @@ function App() {
   }
 
   return (
-    <Container fluid>
+    <Container fluid id="container">
       <Row>
         <Col>
           <h1 className="text-center" id="tool-header">QAnon Network</h1>
@@ -88,6 +90,12 @@ function App() {
               <TabContent activeTab={mActiveTab}>
                 <TabPane tabId="1">
                   <Betweeness />
+                </TabPane>
+                <TabPane tabId="2">
+                  <PageRank />
+                </TabPane>
+                <TabPane tabId="3">
+                  <PageRankWeight />
                 </TabPane>
               </TabContent>
             </Col>
