@@ -65,7 +65,85 @@ const apiWrapper = {
       } else {
         return null
       }
+    },
+
+    async getTopTrending() {
+      let fetched = await requestWrapper({
+        path: '/simpletrending',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
+    },
+
+    async getTopBetween() {
+      let fetched = await requestWrapper({
+        path: '/betweeness',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
+    },
+
+    async getTopPageRank() {
+      let fetched = await requestWrapper({
+        path: '/page_rank',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
+    },
+
+    async getTopPageRankW() {
+      let fetched = await requestWrapper({
+        path: '/page_rank_weighted',
+        method: 'GET'
+      })
+
+      if (fetched.success) {
+        return fetched.data.result
+      } else {
+        return null
+      }
+    },
+
+    async getIndegreeDistro() {
+        let fetched = await requestWrapper({
+            path: "/indegree",
+            method: "GET"
+        })
+        if (fetched.success) {
+            return fetched.data.result
+        } else {
+            return null
+        }
+    },
+
+    async getOutdegreeDistro() {
+        let fetched = await requestWrapper({
+            path: "/outdegree",
+            method: "GET"
+        })
+        if (fetched.success) {
+            return fetched.data.result
+        } else {
+            return null
+        }
     }
+
+
 }
 
 export default apiWrapper

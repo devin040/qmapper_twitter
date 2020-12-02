@@ -158,7 +158,20 @@ class App:
         rel = rel
         query = "MERGE (t1:Tweet {id: $t1_id}) "
         query += "MERGE (t2:Tweet {id: $t2_id}) "
-        query += f"MERGE (t1)-[:{rel}]->(t2) RETURN t1, t2"
+        query += f"MERGE (t1)-[:{rel}]->(t2) "
+        query += "WITH t1, t2 "
+        query += "MATCH (u2:User)-[:Tweets]->(t2) "
+        query += "Match (u1:User)-[:Tweets]->(t1) "
+        query += """
+                MATCH (u1)-[:Tweets]->(t3:Tweet)-[:RETWEET|REPLY_TO|QUOTES]->(t4:Tweet)<-[:Tweets]-(u2)
+                Where u1<>u2
+                with DISTINCT u1, u2, count(t2) as ct, t1, t2 
+                Order by ct desc
+                MERGE (u1)-[i:INTERACTS_W]->(u2)
+                ON CREATE SET i.num = ct
+                ON MATCH SET i.num = ct
+                RETURN t1, t2
+        """
         result = tx.run(query, t1_id=tweet1_id, t2_id=tweet2_id)
         try:
             return [{"t1": record["t1"]["id"], "t2": record["t2"]["id"]}
@@ -509,7 +522,7 @@ def get_full_user_from_mention(username):
 if __name__ == "__main__":
     # See https://neo4j.com/developer/aura-connect-driver/ for Aura specific connection URL.
     scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
-    host_name = "localhost"
+    host_name = "52.165.132.195"
     # neo4jqmap
     port = 7687
     url = "{scheme}://{host_name}:{port}".format(scheme=scheme, host_name=host_name, port=port)

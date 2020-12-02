@@ -35,11 +35,11 @@ function Users() {
 
     return(
         <Container>
-            <Table bordered>
+            <Table striped bordered>
                 <thead>
                     <tr>
-                    <th>Top Users</th>
-                    <th>
+                    <th id="user-header">Top Users</th>
+                    <th id="user-dropdown" className="text-center">
                         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                             <DropdownToggle caret onChange={e => toggleData(e)}>
                                 {dropdownValue}
