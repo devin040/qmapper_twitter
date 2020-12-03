@@ -13,7 +13,7 @@ class Database:
         self.connect()
 
     def connect(self):
-        self.db_driver = GraphDatabase.driver(self._uri, auth=(self._user, self._password))
+        self.db_driver = GraphDatabase.driver(self._uri, auth=(self._user, self._password), max_connection_lifetime=200)
         return self.db_driver
 
     def get_db(self):
