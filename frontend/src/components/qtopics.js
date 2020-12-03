@@ -34,7 +34,7 @@ function QTopics() {
                         return (
                             <React.Fragment key={idx}>
                                 <tr>
-                                    <td colSpan="2">{'Topic ' + idx}</td>
+                                    <td colSpan="2"><b>{'Topic ' + idx}</b></td>
                                 </tr>
                                 {topic.map((t, i) => {
                                     return (

@@ -30,16 +30,16 @@ function Louvain() {
             </thead>
             <tbody>
                 <tr>
-                    <td>Community Count</td>
-                    <td>Max</td>
-                    <td>Mean</td>
-                    <td>Min</td>
-                    <td>50%</td>
-                    <td>75%</td>
-                    <td>90%</td>
-                    <td>95%</td>
-                    <td>99%</td>
-                    <td>99.9%</td>
+                    <td><b>Community Count</b></td>
+                    <td><b>Max</b></td>
+                    <td><b>Mean</b></td>
+                    <td><b>Min</b></td>
+                    <td><b>50%</b></td>
+                    <td><b>75%</b></td>
+                    <td><b>90%</b></td>
+                    <td><b>95%</b></td>
+                    <td><b>99%</b></td>
+                    <td><b>99.9%</b></td>
                 </tr>
                 {louvainStats !== null ? <tr>
                     <td>{louvainStats[0]['communityCount']}</td>
@@ -54,12 +54,12 @@ function Louvain() {
                     <td>{louvainStats[0]['communityDistribution']['p999']}</td>
                 </tr>: null}
                 <tr>
-                    <td colSpan="10">Louvain Clusters</td>
+                    <td colSpan="10"><b>Louvain Clusters</b></td>
                 </tr>
                 <tr>
-                    <td colSpan="2">Community Size</td>
-                    <td colSpan="4">Top Topics</td>
-                    <td colSpan="4">Top Users</td>
+                    <td colSpan="2"><b>Community Size</b></td>
+                    <td colSpan="4"><b>Top Topics</b></td>
+                    <td colSpan="4"><b>Top Users</b></td>
                 </tr>
                 {topLouvain !== null ? topLouvain.map((community, idx) => {
                     return (

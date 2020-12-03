@@ -18,11 +18,13 @@ function Users() {
     const toggle = () => setDropdownOpen(prevState => !prevState);
 
     const toggleData = async e => {
-        setDropDownValue((e && e.target.value) ? 'Tweet Count' : 'Follower Count')
+        // setDropDownValue((e && e.target.value) ? 'Tweet Count' : 'Follower Count')
         if (e && e.target.value === 'tweet') {
+            setDropDownValue('Tweet Count')
             let topTweetUsers = await apiWrapper.getTopTweetUsers();
             setTopUsers(() => topTweetUsers.data)
         } else {
+            setDropDownValue('Follower Count')
             let topUsers = await apiWrapper.getTopUsers();
             setTopUsers(() => topUsers.data);
         }
