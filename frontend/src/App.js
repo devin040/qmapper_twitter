@@ -40,7 +40,7 @@ function App() {
     <Container fluid id="container">
       <Row className="mb-5">
         <Col>
-          <h1 className="text-center" id="tool-header">QAnon Network</h1>
+          <h1 className="text-center" id="tool-header">QMapper Dashboard</h1>
         </Col>
       </Row>
 
