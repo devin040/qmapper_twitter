@@ -22,32 +22,34 @@ function QTopics() {
     }, [])
 
     return(
-        <Table striped bordered>
-            <thead>
-                <tr>
-                    <th colSpan="2">Associated Q Topics</th>
-                </tr>
-            </thead>
-            <tbody>
-                {(trendingTopics !== null && trendingQTopics !== null) ? trendingTopics.map((topic, idx) => {
-                    return (
-                        <React.Fragment key={idx}>
-                            <tr>
-                                <td colSpan="2">{'Topic ' + idx}</td>
-                            </tr>
-                            {topic.map((t, i) => {
-                                return (
-                                    <tr key={t + '' + i}>
-                                        <td>{t}</td>
-                                        <td>{trendingQTopics[idx][i]}</td>
-                                    </tr>
-                                )
-                            })}
-                        </React.Fragment>
-                    )
-                }) : null}
-            </tbody>
-        </Table>
+        <div id="qtable">
+            <Table striped bordered>
+                <thead>
+                    <tr>
+                        <th colSpan="2">Associated Q Topics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {(trendingTopics !== null && trendingQTopics !== null) ? trendingTopics.map((topic, idx) => {
+                        return (
+                            <React.Fragment key={idx}>
+                                <tr>
+                                    <td colSpan="2">{'Topic ' + idx}</td>
+                                </tr>
+                                {topic.map((t, i) => {
+                                    return (
+                                        <tr key={t + '' + i}>
+                                            <td>{t}</td>
+                                            <td>{trendingQTopics[idx][i]}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </React.Fragment>
+                        )
+                    }) : null}
+                </tbody>
+            </Table>
+        </div>
     )
 }
 
