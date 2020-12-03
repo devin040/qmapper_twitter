@@ -5,6 +5,7 @@ import TopTrending from './trending'
 import Betweeness from './betweeness'
 import PageRank from './pagerank'
 import PageRankWeight from './pagerankweight'
+import Louvain from './louvain'
 
 export {
     User,
@@ -13,5 +14,6 @@ export {
     TopTrending,
     Betweeness,
     PageRank,
-    PageRankWeight
+    PageRankWeight,
+    Louvain
 }

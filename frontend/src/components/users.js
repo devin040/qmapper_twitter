@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { 
-    Container, 
     Table, 
     Dropdown, 
     DropdownToggle, 
@@ -34,36 +33,34 @@ function Users() {
     }, [])
 
     return(
-        <Container>
-            <Table striped bordered>
-                <thead>
-                    <tr>
-                    <th id="user-header">Top Users</th>
-                    <th id="user-dropdown" className="text-center">
-                        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
-                            <DropdownToggle caret onChange={e => toggleData(e)}>
-                                {dropdownValue}
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                <DropdownItem value='follow' onClick={e => toggleData(e)}>Follower Count</DropdownItem>
-                                <DropdownItem value='tweet' onClick={e => toggleData(e)}>Tweet Count</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </th>
-                    </tr>
-                </thead>
+        <Table striped bordered>
+            <thead>
+                <tr>
+                <th id="user-header">Top Users</th>
+                <th id="user-dropdown" className="text-center">
+                    <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+                        <DropdownToggle caret onChange={e => toggleData(e)}>
+                            {dropdownValue}
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem value='follow' onClick={e => toggleData(e)}>Follower Count</DropdownItem>
+                            <DropdownItem value='tweet' onClick={e => toggleData(e)}>Tweet Count</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {topUsers.slice(0, 10).map((user, idx) => {
-                        return (
-                            <tr key={idx}>
-                                <td colSpan="2">{user.username}</td>
-                            </tr>
-                        )
-                    })}
-                </tbody>
-            </Table>
-        </Container>
+            <tbody>
+                {topUsers.slice(0, 10).map((user, idx) => {
+                    return (
+                        <tr key={idx}>
+                            <td colSpan="2">{user.username}</td>
+                        </tr>
+                    )
+                })}
+            </tbody>
+        </Table>
     )
 }
 

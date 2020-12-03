@@ -141,9 +141,33 @@ const apiWrapper = {
         } else {
             return null
         }
+    },
+
+    async getTopLouvain() {
+      let fetched = await requestWrapper({
+        path: "/louvaindetail",
+        method: "GET"
+      })
+
+      if (fetched.success) {
+          return fetched.data.result
+      } else {
+          return null
+      }
+    },
+
+    async getLouvainStats() {
+      let fetched = await requestWrapper({
+        path: "/louvainstats",
+        method: "GET"
+      })
+      
+      if (fetched.success) {
+          return fetched.data.result
+      } else {
+          return null
+      }
     }
-
-
 }
 
 export default apiWrapper
