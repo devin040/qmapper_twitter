@@ -36,6 +36,10 @@ function QTopics() {
                                 <tr>
                                     <td colSpan="2"><b>{'Topic ' + idx}</b></td>
                                 </tr>
+                                <tr>
+                                    <td><b>Trending Topic</b></td>
+                                    <td><b>Q Topic</b></td>
+                                </tr>
                                 {topic.map((t, i) => {
                                     return (
                                         <tr key={t + '' + i}>
