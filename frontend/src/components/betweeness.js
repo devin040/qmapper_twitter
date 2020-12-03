@@ -7,7 +7,7 @@ import apiWrapper from '../api'
 
 
 function Betweeness() {
-    const [topBetween, setTopBetween] = useState([]);
+    const [topBetween, setTopBetween] = useState(null);
 
     const fetchBetween = async () => {
         let fetched = await apiWrapper.getTopBetween()
@@ -28,7 +28,7 @@ function Betweeness() {
                 </tr>
             </thead>
             <tbody>
-                {topBetween.slice(0, 10).map((user, idx) => {
+                {topBetween !== null ? topBetween.slice(0, 10).map((user, idx) => {
                     return (
                         <tr key={idx}>
                             <td>{user['name']}</td>
@@ -36,7 +36,7 @@ function Betweeness() {
                             <td>{user['followers']}</td>
                         </tr>
                     )
-                })}
+                }) : null}
             </tbody>
         </Table>
     )

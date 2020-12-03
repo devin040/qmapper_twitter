@@ -7,7 +7,7 @@ import apiWrapper from '../api'
 
 
 function PageRankWeight() {
-    const [topPageRankW, setTopPageRankW] = useState([]);
+    const [topPageRankW, setTopPageRankW] = useState(null);
 
     const fetchPageRankW = async () => {
         let fetched = await apiWrapper.getTopPageRankW()
@@ -28,7 +28,7 @@ function PageRankWeight() {
                 </tr>
             </thead>
             <tbody>
-                {topPageRankW.slice(0, 10).map((user, idx) => {
+                {topPageRankW !== null ? topPageRankW.slice(0, 10).map((user, idx) => {
                     return (
                         <tr key={idx}>
                             <td>{user['name']}</td>
@@ -36,7 +36,7 @@ function PageRankWeight() {
                             <td>{user['followers']}</td>
                         </tr>
                     )
-                })}
+                }) : null}
             </tbody>
         </Table>
     )

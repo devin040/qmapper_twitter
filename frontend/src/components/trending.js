@@ -21,13 +21,13 @@ function TopTrending() {
     return(
         <Table striped bordered>
             <tbody>
-                {topTrending.slice(0, 10).map((topic, idx) => {
+                {topTrending !== null ? topTrending.slice(0, 10).map((topic, idx) => {
                     return (
                         <tr key={idx}>
                             <td>{topic['topic']}</td>
                         </tr>
                     )
-                })}
+                }) : null}
             </tbody>
         </Table>
     )
