@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import {event as currentEvent} from 'd3';
 
 
-function Vis() {
+const Vis = React.memo(() => {
     const d3Container = useRef(null);
     useEffect(
         () => {
@@ -130,7 +130,7 @@ function dragended(d) {
 
 run(graph)
 },
-[d3Container.current])
+[])
 
   return (
     <svg 
@@ -140,5 +140,5 @@ run(graph)
     ref = {d3Container}
     />
   );
-}
+})
 export default Vis;

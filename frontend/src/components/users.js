@@ -52,13 +52,13 @@ function Users() {
             </thead>
 
             <tbody>
-                {topUsers.slice(0, 10).map((user, idx) => {
+                {topUsers !== null ? topUsers.slice(0, 10).map((user, idx) => {
                     return (
                         <tr key={idx}>
                             <td colSpan="2">{user.username}</td>
                         </tr>
                     )
-                })}
+                }) : null}
             </tbody>
         </Table>
     )
