@@ -161,7 +161,33 @@ const apiWrapper = {
         path: "/louvainstats",
         method: "GET"
       })
-      
+
+      if (fetched.success) {
+          return fetched.data.result
+      } else {
+          return null
+      }
+    },
+
+    async getTrendTops() {
+      let fetched = await requestWrapper({
+        path: "/trending_topics",
+        method: "GET"
+      })
+
+      if (fetched.success) {
+          return fetched.data.result
+      } else {
+          return null
+      }
+    },
+
+    async getQTops() {
+      let fetched = await requestWrapper({
+        path: "/qpost_topics",
+        method: "GET"
+      })
+
       if (fetched.success) {
           return fetched.data.result
       } else {

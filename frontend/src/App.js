@@ -18,7 +18,8 @@ import {
   Betweeness,
   PageRank,
   PageRankWeight,
-  Louvain
+  Louvain,
+  QTopics
 } from './components';
 
 import './style/App.css';
@@ -97,7 +98,11 @@ function App() {
                   </Row>
                 </TabPane>
                 <TabPane tabId="2">
-
+                  <Row>
+                    <Col>
+                      <QTopics />
+                    </Col>
+                  </Row>
                 </TabPane>
               </TabContent>
             </Col>

@@ -6,6 +6,7 @@ import Betweeness from './betweeness'
 import PageRank from './pagerank'
 import PageRankWeight from './pagerankweight'
 import Louvain from './louvain'
+import QTopics from './qtopics'
 
 export {
     User,
@@ -15,5 +16,6 @@ export {
     Betweeness,
     PageRank,
     PageRankWeight,
-    Louvain
+    Louvain,
+    QTopics
 }
