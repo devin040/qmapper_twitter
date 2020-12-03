@@ -51,6 +51,7 @@ function App() {
               <Row className="mb-5">
                 <Col>
                   <Vis />
+                  <p className="text-center">Blue = Entities, White = Users, Orange = Tweets</p>
                 </Col>
               </Row>
               <Row className="mt-5">
